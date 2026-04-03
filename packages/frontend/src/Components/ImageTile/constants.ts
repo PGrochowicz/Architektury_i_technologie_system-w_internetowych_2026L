@@ -1,0 +1,1 @@
+export const IMAGE_TILE_MAX_TEXT_LENGTH = 20;

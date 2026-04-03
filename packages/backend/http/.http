@@ -1,0 +1,128 @@
+@baseUrl = http://localhost:8000/api
+@authToken = PASTE_TOKEN_HERE
+
+
+# AUTH
+
+### Initiate Google OAuth login
+GET {{baseUrl}}/auth/google
+
+### Get current authenticated user
+GET {{baseUrl}}/auth/me
+Cookie: token={{authToken}}
+
+### Logout
+POST {{baseUrl}}/auth/logout
+Cookie: token={{authToken}}
+
+### [ADMIN] List all users with photo counts
+GET {{baseUrl}}/auth/admin/users
+Cookie: token={{authToken}}
+
+### [ADMIN] Ban a user
+POST {{baseUrl}}/auth/admin/users/1/ban
+Cookie: token={{authToken}}
+
+### [ADMIN] Unban a user
+POST {{baseUrl}}/auth/admin/users/1/unban
+Cookie: token={{authToken}}
+
+# CITIES
+
+### Get cities by voivodeship
+GET {{baseUrl}}/cities?voivodeshipId=1
+
+### [ADMIN] Get all cities with voivodeship names
+GET {{baseUrl}}/cities/all
+Cookie: token={{authToken}}
+
+### [ADMIN] Rename a city
+PATCH {{baseUrl}}/cities/1
+Content-Type: application/json
+Cookie: token={{authToken}}
+
+{
+  "name": "Nowa Nazwa"
+}
+
+# PHOTOS - AUTHENTICATED
+
+### Get my own photos (no filters)
+GET {{baseUrl}}/photos/logged
+Cookie: token={{authToken}}
+
+### Get my own photos - with filters
+GET {{baseUrl}}/photos/logged?voivodeshipId=1&cityId=2&dateFrom=2020-01-01&dateTo=2023-12-31&tags=architektura&page=1&pageSize=10
+Cookie: token={{authToken}}
+
+### [ADMIN] Get all photos with user info (no filters)
+GET {{baseUrl}}/photos/admin
+Cookie: token={{authToken}}
+
+### [ADMIN] Get all photos - filter by user
+GET {{baseUrl}}/photos/admin?userId=1
+Cookie: token={{authToken}}
+
+### [ADMIN] Get all photos - photos since last admin login
+GET {{baseUrl}}/photos/admin?isSinceLastLoginChecked=true
+Cookie: token={{authToken}}
+
+### [ADMIN] Get all photos - all filters combined
+GET {{baseUrl}}/photos/admin?userId=1&voivodeshipId=1&cityId=2&dateFrom=2020-01-01&dateTo=2023-12-31&tags=architektura&isSinceLastLoginChecked=false&page=1&pageSize=10
+Cookie: token={{authToken}}
+
+### Add a new photo (existing city)
+POST {{baseUrl}}/photos
+Content-Type: application/json
+Cookie: token={{authToken}}
+
+{
+  "file": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD...",
+  "fileName": "zdjecie.jpg",
+  "cityId": 1,
+  "description": "Opis zdjęcia",
+  "takenYear": 2023,
+  "takenMonth": 6,
+  "takenDay": 15,
+  "tags": ["architektura", "zabytek"]
+}
+
+### Add a new photo with a new city
+POST {{baseUrl}}/photos
+Content-Type: application/json
+Cookie: token={{authToken}}
+
+{
+  "file": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD...",
+  "fileName": "zdjecie.jpg",
+  "cityId": 0,
+  "description": "Opis zdjęcia z nowym miastem",
+  "takenYear": 2022,
+  "takenMonth": null,
+  "takenDay": null,
+  "tags": [],
+  "customCityName": "Nowe Miasto",
+  "voivodeshipId": 1
+}
+
+### Update a photo (description and tags only)
+PATCH {{baseUrl}}/photos/1
+Content-Type: application/json
+Cookie: token={{authToken}}
+
+{
+  "cityId": 1,
+  "description": "Zaktualizowany opis",
+  "takenYear": 2023,
+  "takenMonth": 7,
+  "takenDay": 20,
+  "tags": ["architektura"],
+  "file": null,
+  "fileName": null,
+  "customCityName": null,
+  "voivodeshipId": null
+}
+
+### Delete a photo
+DELETE {{baseUrl}}/photos/1
+Cookie: token={{authToken}}
